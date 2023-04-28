@@ -2,38 +2,16 @@ import { useState, useEffect } from 'react';
 import '../App.css';
 
 const AxieRow = ( {txHash} ) => {
-    const [data, setData] = useState()
+    const [data, setData] = useState([...Array(1).keys()])
     const [loading, setLoading] = useState(false)
-    const apiKey = process.env.REACT_APP_APIKEY
-    const chainName = 'axie-mainnet'
-    const getTxEndpoint = `https://api.covalenthq.com/v1/${chainName}/transaction_v2/${txHash}/`
-    const truncateRegex = /^([a-zA-Z0-9]{4})[a-zA-Z0-9]+([a-zA-Z0-9]{4})$/
-
-    const truncateEthAddress = (address) => {
-        const match = address.match(truncateRegex);
-        if (!match) return address;
-        return `${match[1]}…${match[2]}`;
-      };
-
-    useEffect(() => {
-        setLoading(true)
-        fetch(getTxEndpoint, {method: 'GET', headers: {
-          "Authorization": `Basic ${btoa(apiKey + ':')}`
-        }})
-          .then(res => res.json())
-          .then(res => {
-            setLoading(false)
-            console.log(res.data.items)
-            setData(res.data.items)
-          })
-          .catch(err => console.log(err.message))
-      }, [getTxEndpoint, apiKey])
+ 
 
     if (loading) {
         return <div className='title'>Loading...</div>
     } 
 
     if (data) {
+        console.log("data",data)
         return (
             <>
                 <div className='sectionContainer'>
@@ -41,17 +19,17 @@ const AxieRow = ( {txHash} ) => {
                         return (
                             <div className='rowTxn' key={item}>
                                 <div className='txnContainer'> 
-                                    <SpawnDate date={new Date(item.block_signed_at).toLocaleString('en-US', { day: 'numeric', month: 'short' })} />
+                                    <SpawnDate date={'13 May 2023'} />
                                     <AxieLogo imgUrl={'https://res.cloudinary.com/dl4murstw/image/upload/v1682603151/axie_logo_kb5omk.png'}/>
                                     <TwoRowText 
-                                        top={'Axie #' + parseInt(item.log_events[1].raw_log_topics[1], 16) + ' Spawned'} 
-                                        bottom={'ronin:' + truncateEthAddress(item.from_address.slice(2))} 
-                                        address={item.from_address}
+                                        top={'Axie #000000 Spawned'} 
+                                        bottom={'ronin:0000000000000000000000000000'} 
+                                        address={'00000000'}
                                     />
-                                    <TokensTransferred axs={Number(item.log_events[6].decoded.params[2].value)/(10**18)} slp={item.log_events[5].decoded.params[2].value}/>
-                                    <Breed breed={parseInt(item.log_events[3].raw_log_topics[2], 16)} />
-                                    <Gas feesPaid={(Number(item.fees_paid) / (10**18)).toFixed(5)}/>
-                                    <ViewTxn txHash={item.tx_hash}/>
+                                    <TokensTransferred axs={'000'} slp={'00000'}/>
+                                    <Breed breed={'different'} />
+                                    <Gas feesPaid={'0000'}/>
+                                    <ViewTxn txHash={'0000'}/>
                                 </div>
                             </div>
                             )
